@@ -1,12 +1,3 @@
-import time
-from tkinter import E
-from urllib import request
-from bs4 import BeautifulSoup
-import requests
-from requests.exceptions import HTTPError
-import webbrowser as wb
-
-
 import helper_functions as hf
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -15,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 
 
 
-hf.browser_emulation()
+hf.browser_emulation("15")
 
 
 exit()

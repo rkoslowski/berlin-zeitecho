@@ -11,7 +11,6 @@ def searchavailableappointments():
         # execute the main code to retrieve appointment-links
         try:
             day = hf.try_get_app(url)
-            print(day)
             if (day < 0 or day > 31):
                 raise ValueError
         except TypeError :
@@ -23,10 +22,8 @@ def searchavailableappointments():
             exit()
         
         if(day != 0):
-            print('emu start')
             hf.browser_emulation(day)
         elif(day == 0):
-            print('gonna wait')
             # prevent serverblocking by waiting a random period of time
             hf.sleep_til_next_request()
         else:

@@ -5,6 +5,7 @@ from urllib import request
 from requests.exceptions import HTTPError
 import webbrowser as wb
 import random
+import private as private
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -38,6 +39,7 @@ def get_available_appointment_links_this_month(response):
                 ext_link = "http://service.berlin.de" + link.attrs['href']
                 print(ext_link)
                 if found:
+                    day = parse_day(day)
                     return day
                     #open_in_browser(ext_link)
                 else:
@@ -57,6 +59,7 @@ def get_available_appointment_links_next_month(response):
             ext_link = "http://service.berlin.de" + link.attrs['href']
             print(ext_link)
             if found:
+                day = parse_day(day)
                 return day
                 #open_in_browser(ext_link)
             else:
@@ -72,9 +75,9 @@ def open_in_browser(link):
 # the booleans are to be set as the only input parameter
 # i really didnt want to make an gui...
 def get_servic_type():
-    anmeldung_einer_wohnung     = True
+    anmeldung_einer_wohnung     = False
     personal_id_beantragen      = False
-    reisepass_beantragen        = False
+    reisepass_beantragen        = True
     if(anmeldung_einer_wohnung):
         return 'https://service.berlin.de/dienstleistung/120686/'
     elif (personal_id_beantragen):
@@ -125,9 +128,10 @@ def try_get_app(longurl):
     else:
         return 0
 
-def browser_emulation():
-
+def browser_emulation(day):
+    
     browser = webdriver.Firefox(executable_path="C:\Program Files\Mozilla Firefox\geckodriver.exe")
+    
     type = get_servic_type()
 
     browser.get('https://duckduckgo.com')
@@ -142,6 +146,55 @@ def browser_emulation():
 
     browser.get(type)
 
-    searchbtn = browser.find_element(By.PARTIAL_LINK_TEXT, 'berlinweit').click()
+    browser.find_element(By.PARTIAL_LINK_TEXT, 'berlinweit').click()
 
-    #browser.get(type)
+    browser.find_element(By.LINK_TEXT, str(day)).click()
+
+    fav_location = ["Tempelhof","Schöneberg","Lichtenrade"]
+
+    numTempelhof = browser.find_elements(By.PARTIAL_LINK_TEXT, fav_location[0])
+    numSchoeneberg = browser.find_elements(By.PARTIAL_LINK_TEXT, fav_location[1])
+    numLichtenrade = browser.find_elements(By.PARTIAL_LINK_TEXT, fav_location[2])
+
+    url = browser.current_url
+
+    print(browser.current_url)
+
+    if (url.find('human') != -1):
+        print("verification neccessary")
+    else:
+        print("no verification neccessary")
+
+        #subsub = sub.get_attribute(By.NAME, "href")
+  
+        if(len(numTempelhof) != 0):
+            numTempelhof[0].click()
+        elif(len(numSchoeneberg) != 0):
+            numSchoeneberg[0].click()
+        elif(len(numLichtenrade) != 0):
+            numLichtenrade[0].click()
+        else:
+            table = browser.find_element(By.CLASS_NAME, "timetable")
+            #locs = table.find_elements(By.CLASS_NAME, "frei")
+            #for e in locs:
+            #    print(e.text)
+            elems = table.find_elements(By.CLASS_NAME, "frei [href]")
+            elems[0].click()
+
+        p_in = private.private_info()
+
+        name_field = browser.find_element(By.ID, 'familyName')
+        name_field.send_keys(p_in._name + Keys.TAB + p_in._mail)
+        
+        browser.find_element(By.ID, 'agbgelesen').click()
+
+        browser.find_element(By.ID, 'register_submit').click()
+
+        browser.quit()
+
+
+def parse_day(day):
+    if (day > 9):
+        return day
+    else:
+        return '0'+ str(day)
