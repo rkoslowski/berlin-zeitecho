@@ -141,7 +141,7 @@ def browser_emulation(day):
     searchbar.send_keys('www.service.berlin.de' + Keys.RETURN)
 
     #mainwebpage = browser.find_element(By.XPATH("//a[@href='service.berlin.de']"))
-    
+
     browser.get("https://service.berlin.de/")
 
     browser.get(type)
