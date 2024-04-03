@@ -1,6 +1,10 @@
 from msilib.schema import Error
 import helper_functions as hf
 
+def add_one(number):
+    return number + 1
+
+'''
 def searchavailableappointments():
     # long link (including all days of a service)
     url = hf.get_long_link()
@@ -31,3 +35,4 @@ def searchavailableappointments():
 
 if __name__ == '__main__':
     searchavailableappointments()
+'''
